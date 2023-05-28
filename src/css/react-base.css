@@ -1,0 +1,449 @@
+.App {
+    font-family: "Open Sans",sans-serif;
+    width: 100%;
+    height: 100%;
+    background-color: #1F2633;
+}
+
+.defaultBackground {
+    background-color: transparent;
+}
+
+.header {
+    width: 100%;
+    height: 100%;
+    background-color: #1F2633;
+}
+
+.body > div {
+    width: 1280px;
+}
+
+input[type=text] {
+    background-color: transparent;
+    border: 1px solid #4A5568;
+    color: white !important;
+}
+
+.footer > div{
+    width: 1240px;
+}
+
+.detail-body > div {
+    width: 1040px;
+}
+
+.tableSortList > a.active{
+    background-color: #1B1630;
+}
+
+.searchInput input[type=text] {
+    width: 400px;
+    box-sizing: border-box;
+    border: 1px solid #444;
+    background-color: #1B1630;
+    border-radius: 6px;
+    font-size: 16px;
+    color: white;
+    background-image: url('searchicon.png');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 8px 20px 8px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+.footer_email input[type=text] {
+    width: 60%;
+    box-sizing: border-box;
+    border: 1px solid #444;
+    background-color: #1B1630;
+    border-radius: 6px;
+    font-size: 16px;
+    color: white;
+    padding: 8px 10px 8px 15px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+.tableHeader {
+    background-color: #1B1630;
+}
+
+.paginationItems a {
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+
+.lorswap_vote {
+    background-color: #662483;
+    width: 100%;
+}
+
+.tableHrefs a {
+    background-color: #1A1530;
+    color: white;
+}
+
+.tableHrefs a.active {
+    background-color: white;
+    color: #1F2633;
+}
+
+.blockchain-com a{
+    background-color: #1B1630;
+}
+
+.paginationItems a.active {
+    background-color: #662483;
+    color: white;
+}
+
+.timelinePeriod a.active {
+    background-color: #662483;
+    color: white;
+}
+
+.paginationItems a:hover:not(.active) {
+    background-color: #662483;
+}
+
+.mainActionTag a.active {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: white;
+}
+
+/* lg */
+@media only screen and (max-width: 1040px) {
+    .body div {
+        width: 100%;
+    }
+
+    .footer > div{
+        width: 100%;
+    }
+
+    .searchInput{
+        width: 100%;
+    }
+
+    .detail-body > div {
+        width: 100%;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .tokenomics {
+        width: 100% !important;
+    }
+
+    .card {
+        width: 85% !important;
+    }
+
+    .footerLink{
+        padding-right: 0px !important;
+    }
+
+    .footer {
+        padding-bottom: 20px;
+    }
+
+    .accordion{
+        width: 380px !important;
+        font-size: 16px !important;
+    }
+
+    .panel {
+        width: 380px !important;
+    }
+
+    .myVideo {
+        height: 90% !important;
+    }
+}
+
+/* md */
+@media only screen and (max-width: 768px) {
+    .lorWatch {
+        text-align: center;
+    }
+
+    .footer_logo {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .footer_input{
+        width: 80% !important;
+        height: 30px !important;
+    }
+
+    .footer_subscirbe{
+        height: 30px !important;
+    }
+
+    .tableSortList {
+        flex-direction: column;
+    }
+
+    .tableHrefs {
+        justify-content: center;
+    }
+
+    .searchInput{
+        padding-top: 20px;
+    }
+
+    .footerLink{
+        width: 50% !important;
+    }
+
+    .footerLogo { 
+        width: 100% !important;
+    }
+
+    .trade_btn{
+        width: 50%;
+    }
+
+    .wallet_btn{
+        width: 50%;
+    }
+
+    /* .detailedInfo {
+        grid-template-columns: repeat(2, 1fr);
+    } */
+
+    .profit_calc{
+        width: 100% !important;
+    }
+
+    .wallet_connect{
+        width: 100px;
+    }
+
+    .roadmap_card {
+        width: 360px !important;
+    }
+
+    .myVideo {
+        height: 97% !important;
+    }
+}
+
+/* sm */
+@media only screen and (max-width: 640px) {
+    .smHidden {
+        display: none;
+    }
+
+    .first_section{
+        height: 640px !important;
+    }
+
+    /* .myVideo {
+        height: 97% !important;
+    } */
+
+    .smShow {
+        text-align: center;
+    }
+
+    .trade_btn{
+        width: 50%;
+    }
+
+    .wallet_btn{
+        width: 50%;
+    }
+
+    .profit_calc{
+        width: 100% !important;
+    }
+}
+
+.vote_btn {
+    background-color: #CCC1F0;
+    color: #662483;
+    border-radius: 8px;
+}
+
+.trade_btn {
+    color: white;
+    background-color: #662483;
+    border-radius: 8px;
+}
+
+.wallet_btn{
+    color: #662483;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.to-primary {
+    --tw-gradient-to: #00d1c7;
+}
+
+.text-primary-400 {
+    --tw-text-opacity: 1;
+    color: rgb(0 250 238/var(--tw-text-opacity));
+}
+
+.bg-gradient-to-r {
+    background-image: linear-gradient(to right,var(--tw-gradient-stops));
+}
+
+.from-primary {
+    --tw-gradient-from: #00d1c7;
+    --tw-gradient-to: rgba(0,209,199,0);
+    --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to);
+}
+
+.to-white {
+    --tw-gradient-to: #fff;
+}
+
+.text-transparent {
+    color: transparent;
+}
+
+/* launchpad */
+.to-blue-500 {
+    --tw-gradient-to: #00a9f6;
+}
+.via-primary-600 {
+    --tw-gradient-to: rgba(0,153,146,0);
+    --tw-gradient-stops: var(--tw-gradient-from),#009992,var(--tw-gradient-to);
+}
+.from-primary-500 {
+    --tw-gradient-from: #00d1c7;
+    --tw-gradient-to: rgba(0,209,199,0);
+    --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to);
+}
+.to-blue-500 {
+    --tw-gradient-to: #00a9f6;
+}
+
+.frosted-glass-lightsmoke:before, .frosted-glass-skygray:before, .frosted-glass-smoke:before, .frosted-glass-teal:before, .frosted-glass:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: .7;
+    background: transparent;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 var(--border-line-width,1.5px) var(--border-color);
+    -webkit-mask-image: radial-gradient(at -31% -58%,rgba(0,0,0,.5) 34%,transparent 60%),linear-gradient(270deg,rgba(0,0,0,.2) 0,transparent 13%),linear-gradient(rgba(0,0,0,.05),rgba(0,0,0,.05));
+    mask-image: radial-gradient(at -31% -58%,rgba(0,0,0,.5) 34%,transparent 60%),linear-gradient(270deg,rgba(0,0,0,.2) 0,transparent 13%),linear-gradient(rgba(0,0,0,.05),rgba(0,0,0,.05));
+}
+
+.frosted-glass-teal {
+    --text-color: #3bd0d8;
+    --border-color: #58f3cd;
+    --bg-board-color: rgba(59,208,216,.2);
+    --bg-board-color-2: rgba(59,208,216,0);
+}
+
+.frosted-glass, .frosted-glass-lightsmoke, .frosted-glass-skygray, .frosted-glass-smoke, .frosted-glass-teal {
+    --text-color: #fff;
+    --border-color: #fff;
+    --bg-board-color: hsla(0,0%,100%,.12);
+    --bg-board-color-2: hsla(0,0%,100%,0);
+    position: relative;
+    -webkit-backdrop-filter: blur(calc(var(--blur-size) * (-1 * var(--is-scrolling, 0) + 1)));
+    backdrop-filter: blur(calc(var(--blur-size) * (-1 * var(--is-scrolling, 0) + 1)));
+    color: var(--text-color);
+    background: linear-gradient(162deg,var(--bg-board-color) 28.7%,var(--bg-board-color-2,var(--bg-board-color)));
+    isolation: isolate;
+}
+
+.frosted-glass-lightsmoke:before, .frosted-glass-skygray:before, .frosted-glass-smoke:before, .frosted-glass-teal:before, .frosted-glass:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: .7;
+    background: transparent;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 var(--border-line-width,1.5px) var(--border-color);
+    -webkit-mask-image: radial-gradient(at -31% -58%,rgba(0,0,0,.5) 34%,transparent 60%),linear-gradient(270deg,rgba(0,0,0,.2) 0,transparent 13%),linear-gradient(rgba(0,0,0,.05),rgba(0,0,0,.05));
+    mask-image: radial-gradient(at -31% -58%,rgba(0,0,0,.5) 34%,transparent 60%),linear-gradient(270deg,rgba(0,0,0,.2) 0,transparent 13%),linear-gradient(rgba(0,0,0,.05),rgba(0,0,0,.05));
+}
+
+.frosted-glass-teal {
+    --text-color: #3bd0d8;
+    --border-color: #58f3cd;
+    --bg-board-color: rgba(59,208,216,.2);
+    --bg-board-color-2: rgba(59,208,216,0);
+}
+
+.myDiv {
+    background:linear-gradient(245.22deg, #da2eef 7.97%, #2b6aff 49.17%, #39d0d8 92.1%);
+    mask-image:url('https://raydium.io/backgroundImages/home-bg-element-2.png');
+    -webkit-mask-image:url('https://raydium.io/backgroundImages/home-bg-element-2.png');
+    mask-size:cover;
+    -webkit-mask-size:cover;
+}
+
+.sectionsection-circle{
+    background:radial-gradient(at center top, transparent 20%, hsl(245, 60%, 16%, 0.2)), url('https://raydium.io/backgroundImages/home-page-section1-light.webp'), #1b1659;
+    box-shadow:8px 8px 10px rgba(20, 16, 65, 0.05), -8px -8px 10px rgba(197, 191, 255, 0.05), inset 0 6px 20px rgba(197, 191, 255, 0.2), inset 0 -1px 25px rgba(197, 191, 255, 0.1);
+    background-size:100% 100%
+}
+
+.bg-ebony-clay-800\/80 {
+    background-color: rgba(14,17,22,.8);
+}
+
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    text-align: left;
+    width: 780px;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+  }
+  
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .active, .accordion:hover {
+    background-color: #ccc;
+  }
+  
+  /* Style the accordion panel. Note: hidden by default */
+  .panel {
+    padding: 0 18px;
+    background-color: rgb(25, 31, 41);
+    /* max-height: 100px; */
+    width: 780px;
+    transition: max-height 0.2s ease-out;
+  }
+
+  .accordion:after {
+    /* content: '\02795'; Unicode character for "plus" sign (+) */
+    content: '>';
+    font-size: 25px;
+    color: white;
+    float: right;
+    margin-left: 20px;
+  }
+  
+  .active:after {
+    margin-left: 20px;
+    font-size: 22px;
+    content: '∨'; /* Unicode character for "minus" sign (-) */
+  }
+
+  section {
+    transition: transform 1s ease-out;
+  }
+  
+  section:target {
+    transform: translateY(50px);
+  }
