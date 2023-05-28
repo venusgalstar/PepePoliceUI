@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+
+.nft_button{
+  background-image: linear-gradient(271.56deg, rgb(133, 100, 28) 44.99%, rgb(133, 79, 28) 74.63%);
+}

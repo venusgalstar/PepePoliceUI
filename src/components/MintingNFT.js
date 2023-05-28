@@ -65,9 +65,7 @@ function MintingNFT () {
                             </div> */}
 
                             <div className='text-center text-orange-300 text-sm py-4'>Mint an NFT Charges 0.01BNB</div>
-                            <div className='w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold' style={{background: "linear-gradient(271.56deg, rgb(133, 100, 28) 44.99%, rgb(133, 79, 28) 74.63%)"}}>
-                                Minting NFTs PPN
-                            </div>
+                            <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'>Minting NFTs PPN</button>
                         </div>
                     </div>
                 </div>
