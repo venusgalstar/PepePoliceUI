@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 
-import { Web3Modal,Web3Button } from '@web3modal/react';
+import { Web3Button } from '@web3modal/react';
 
 const navigation = [
   { name: 'Meet The Team', href: '#Developer', current: false },
