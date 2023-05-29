@@ -6,12 +6,12 @@ import '../css/animations.css';
 import '../css/second_section.css';
 import '../css/roadmap.css';
 import '../css/real_roadmap.css';
-import web3Config from '../web3/config';
 import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import Pagination from './Pagination';
 
+import web3Config from '../web3/config';
 import { Web3Modal } from '@web3modal/react';
 
 //-----------wallet connect modules--------------
@@ -46,21 +46,20 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 function MintingNFT () {
 
-    console.log(web3Config);
-
-    const [nftCount, setNftCount] = useState("1");
-    const [currentPage, setCurrentPage] = useState(1);
-    // const {
-    //     mintConfig,
-    //     error: prepareError,
-    //     isError: isPrepareError
-    // } = usePrepareContractWrite({
-    //     address: web3Config.nftAddress,
-    //     abi: web3Config.nftAbi,
-    //     functionName: "mint",
-    //     args: [parseInt(nftCount, 10)], //argument to write
-    //     enabled: Boolean(nftCount) //possible to write if there is a value in number
-    // });
+    const [nftCount, setNftCount] = useState(1);
+    const { address, isConnected } = useAccount();
+    
+    const {
+        mintConfig,
+        error: prepareError,
+        isError: isPrepareError
+    } = usePrepareContractWrite({
+        address: web3Config.nftAddress,
+        abi: web3Config.nftAbi,
+        functionName: "mint",
+        args: [address, parseInt(nftCount, 10)], //argument to write
+        enabled: Boolean(nftCount) //possible to write if there is a value in number
+    });
     // const { data, error, isError, write } = useContractWrite(mintConfig);
     // const { isLoading, isSuccess } = useWaitForTransaction({
     //     hash: data?.hash
@@ -107,7 +106,7 @@ function MintingNFT () {
                                         <p className='pr-1 text-orange-400 font-bold'>Select The Amount</p>
                                     </div>
                                 </div>
-                                <Pagination currentIndex={currentPage} onClick={(i) => setCurrentPage(i)}/>
+                                <Pagination currentIndex={nftCount} onClick={(i) => setNftCount(i)}/>
                                 <div className='text-center text-orange-300 text-sm py-4'>Mint an NFT Charges 0.01BNB</div>
                                 <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
                                     // disabled={!write || isLoading}
@@ -115,7 +114,7 @@ function MintingNFT () {
                                     //     write?.();
                                     //   }}
                                 >
-                                    {/* {isLoading ? "Minting..." : "Minting NFTs PPN"}                                     */}
+                                    {/* {isLoading ? "Minting..." : "Minting NFTs PPN"}*/}
                                     Minting NFTs PPN
                                 </button>
                             </div>
