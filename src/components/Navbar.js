@@ -1,30 +1,9 @@
-import { Fragment, useEffect, useImperativeHandle, useState } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Fragment, useEffect, useImperativeHandle, useState } from 'react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 
-
-
-//-----------wallet connect modules--------------
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { Web3Modal } from '@web3modal/react'
-import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { arbitrum, mainnet, polygon, bsc, bscTestnet } from 'wagmi/chains'
-
-import { Web3Button } from '@web3modal/react'
-
-const chains = [bscTestnet, bsc]
-const projectId = 'fe62b424c4ab666f47d64744e0b3dca0'
-
-const { provider } = configureChains(chains, [w3mProvider({ projectId })])
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: 1, chains }),
-  provider
-})
-const ethereumClient = new EthereumClient(wagmiClient, chains)
-//----------------------------------------------------
-
+import { Web3Modal,Web3Button } from '@web3modal/react';
 
 const navigation = [
   { name: 'Meet The Team', href: '#Developer', current: false },
@@ -64,10 +43,6 @@ export default function Example(props) {
     }
     if(index >3) navigate(navigation[index].href);
     else navigate('/');
-
-    //'/staking' 
-    //'/nftmint' 
-    //'/nftstake'
   }
 
   return (
@@ -92,7 +67,7 @@ export default function Example(props) {
                   )}
                 </Disclosure.Button>
               </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start hover:cursor-pointer" onClick={gotoLanding}>
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start hover:cursor-pointer">
                 {/* Normal navigation*/}
                 <div className="flex flex-shrink-0 items-center _lg:hidden">
                   
@@ -118,9 +93,7 @@ export default function Example(props) {
                       </a>
                     ))}
                     <> {/* connect button */}
-                      <WagmiConfig client={wagmiClient}>
-                        <Web3Button accentColor="blueviolet"/>
-                      </WagmiConfig>
+                      <Web3Button accentColor="blueviolet"/>
                     </>
                   </div>
                 </div>
@@ -128,7 +101,6 @@ export default function Example(props) {
               
             </div>
           </div>
-          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
           <Disclosure.Panel className="lg:hidden w-full">
             <div className="space-y-1 px-2 pb-3 pt-2 overflow">
               {navigation.map((item,index) => (
