@@ -8,7 +8,7 @@ var config = {
     nftAbi: nftAbi,
     tokenAddress: "0xBD85c3F31bc20aE79eCc710fF9CbC03bCB1CFA8C",
     tokenAbi: tokenAbi,
-    nftStakeAddress: "0xef542e9b8bD3Cee766c03e7Ab1C57EDA295Fd0f1",
+    nftStakeAddress: "0xe34e07f8006bf6b090b148d0632b950435e513cc",
     nftStakeAbi: nftStakeAbi,
     RPC_URL: "https://data-seed-prebsc-2-s2.binance.org:8545",
 };

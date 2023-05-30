@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 pragma solidity ^0.8.0;
 
-contract Mint_Pass is ERC721Enumerable, Ownable {
+contract PepeBornNFT is ERC721Enumerable, Ownable {
 
     struct TokenInfo {
         IERC20 paytoken;
@@ -18,12 +18,49 @@ contract Mint_Pass is ERC721Enumerable, Ownable {
     using Strings for uint256;
     string public baseURI;
     string public baseExtension = ".json";
-    uint256 public cost = 0.5 ether;
-    uint256 public maxSupply = 300;
+    uint256 public cost = 0.01 ether;
+    uint256 public maxSupply = 10000;
     uint256 public maxMintAmount = 5;
+    uint256[5] public lastMinted;
     bool public paused = false;
 
-    constructor() ERC721("Mopots NFTs", "MPOTs") {}
+//==For DevMint== 
+    address[] private devWallets;
+    mapping(uint256 => bool) private _tokenIdExists;
+
+    modifier onlyDev() {
+        bool exist = false;
+        for (uint256 i; i < devWallets.length; ++i) {
+            if (msg.sender == devWallets[i]) {
+                exist = true;
+            }
+        }
+        require(exist == true, "forbidden");
+        _;
+    }
+
+    function setDevWallets(address[] memory _devWallets) external onlyOwner {
+        require(_devWallets.length > 0, "empty array");
+        devWallets = _devWallets;
+    }
+
+    function mintForDev(
+        uint256[] calldata __tokenIds
+    ) external payable onlyDev {
+        uint256 supply = totalSupply();
+        require(!paused, "paused-eror");
+        require(__tokenIds.length <= maxMintAmount, "tokenid-length");
+        require(__tokenIds.length > 0, "less<0");
+        require(supply + __tokenIds.length <= maxSupply, "maxsuplly error");
+
+        for (uint256 i; i < __tokenIds.length; ++i) {
+            _safeMint(msg.sender, __tokenIds[i]);
+            _tokenIdExists[__tokenIds[i]] = true;
+        }
+    }
+    constructor() ERC721("PepeBornNFT", "PBN") {
+        baseURI = "https://ipfs.io/ipfs/bafybeiepzg6e7oes2ifdgxmn6anepetmnqgiqh42tbjjnhv4ukx5ll73ga/";
+    }
 
     function addCurrency(
         IERC20 _paytoken,
@@ -38,25 +75,49 @@ contract Mint_Pass is ERC721Enumerable, Ownable {
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
-    return "ipfs://bafybeiaj2ojnv7ij7rugojrrc3xkl7lbrhsmv7aefefikjzglhggpgoxii/";
-
+        return baseURI;
     }
-    
+
+    function getRandomNumber(uint256 _salt) public view returns (uint256) {
+        uint256 randomNumber = uint256(
+            keccak256(
+                abi.encodePacked(block.timestamp, block.difficulty, _salt)
+            )
+        ) % (maxSupply - 1);
+        return randomNumber;
+    }
+        
+
     function mint(address _to, uint256 _mintAmount) public payable {
-            uint256 supply = totalSupply();
-            require(!paused);
-            require(_mintAmount > 0);
-            require(_mintAmount <= maxMintAmount);
-            require(supply + _mintAmount <= maxSupply);
-            
-            if (msg.sender != owner()) {
+        uint256 supply = totalSupply();
+	uint256 newItemId;
+        uint256 rpCnt;
+        require(!paused);
+        require(_mintAmount > 0);
+        require(_mintAmount <= maxMintAmount);
+        require(supply + _mintAmount <= maxSupply);
+        
+	if (msg.sender != owner()) {
             require(msg.value == cost * _mintAmount, "Not enough balance to complete transaction.");
             }
-            
+	        
             for (uint256 i = 1; i <= _mintAmount; i++) {
-                _safeMint(_to, supply + i);
+            rpCnt = 0;
+            while (rpCnt < maxSupply) {
+                newItemId = getRandomNumber(newItemId);
+                if (!_tokenIdExists[newItemId]) {
+                    break;
+                }
+                newItemId++;
+                rpCnt++;
             }
-    }
+            if (rpCnt < maxSupply) {
+                _safeMint(_to, newItemId);
+                _tokenIdExists[newItemId] = true;
+		lastMinted[i-1] = newItemId;
+            }
+        }
+        }
 
 
     function mintpid(address _to, uint256 _mintAmount, uint256 _pid) public payable {
@@ -66,15 +127,30 @@ contract Mint_Pass is ERC721Enumerable, Ownable {
         uint256 costval;
         costval = tokens.costvalue;
         uint256 supply = totalSupply();
+	    uint256 newItemId;
+        uint256 rpCnt;
         require(!paused);
         require(_mintAmount > 0);
         require(_mintAmount <= maxMintAmount);
         require(supply + _mintAmount <= maxSupply);
             
             for (uint256 i = 1; i <= _mintAmount; i++) {
-                require(paytoken.transferFrom(msg.sender, address(this), costval));
-                _safeMint(_to, supply + i);
+            require(paytoken.transferFrom(msg.sender, address(this), costval));
+            rpCnt = 0;
+            while (rpCnt < maxSupply) {
+                newItemId = getRandomNumber(newItemId);
+                if (!_tokenIdExists[newItemId]) {
+                    break;
+                }
+                newItemId++;
+                rpCnt++;
             }
+            if (rpCnt < maxSupply) {
+                _safeMint(_to, newItemId);
+                _tokenIdExists[newItemId] = true;
+		lastMinted[i-1] = newItemId;
+            }
+        }
         }
 
         function walletOfOwner(address _owner)
@@ -151,5 +227,3 @@ contract Mint_Pass is ERC721Enumerable, Ownable {
             require(payable(msg.sender).send(address(this).balance));
         }
 }
-
-

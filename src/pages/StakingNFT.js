@@ -201,8 +201,8 @@ function StakingNFT() {
                             {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
                             <div className='text-orange-400 text-2xl font-bold'>Stake NFT</div>
 
-                            <div className='my-5 tabcontent overflow-y-auto' style={{ height: "450px" }}>
-                                <div className='border border-gray-700 p-4 rounded-xl' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px" }}>
+                            <div className='my-5 tabcontent ' style={{ height: "450px" }}>
+                                <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
                                     {
 
                                         unStakedNftList != null ? unStakedNftList.map((v, index) => {
@@ -234,8 +234,8 @@ function StakingNFT() {
                             {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
                             <div className='text-orange-400 text-2xl font-bold'>UnStake NFT</div>
 
-                            <div className='my-5 tabcontent overflow-y-auto' style={{ height: "450px" }}>
-                                <div className='border border-gray-700 p-4 rounded-xl' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px" }}>
+                            <div className='my-5 tabcontent ' style={{ height: "450px" }}>
+                                <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
                                     {
 
                                         stakedNftList != null ? stakedNftList.map((v, index) => {
