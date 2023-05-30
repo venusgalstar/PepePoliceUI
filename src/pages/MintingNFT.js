@@ -103,10 +103,10 @@ function MintingNFT() {
 
             <div className='relative h-full pt-6' style={{ backgroundColor: "#1F2633" }}>
                 <div className='mt-6 flex h-full flex-col items-center relative'>
-                    <div className='mt-10 relative px-4 sm:px-6 flex flex-col justify-center items-center w-full' style={{ height: "550px" }}>
+                    <div className='first_section relative px-4 sm:px-6 flex flex-col justify-center items-center w-full' style={{ height: "550px" }}>
 
                         {/* Staking */}
-                        <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "650px", backgroundColor: "rgba(0,0,0,0.9)" }}>
+                        <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "520px", backgroundColor: "rgba(0,0,0,0.9)" }}>
 
                             <div className='text-orange-400 text-2xl font-bold'>Minting NFT</div>
 
