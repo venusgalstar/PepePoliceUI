@@ -20,7 +20,6 @@ const web3NoAccount = new Web3(httpProvider);
 
 function StakingNFT() {
 
-    const [nftCount, setNftCount] = useState(1);
     const [injectedProvider, setInjectedProvider] = useState();
     const [web3, setWeb3] = useState();
     const [isConnected, setIsConnected] = useState(false);
