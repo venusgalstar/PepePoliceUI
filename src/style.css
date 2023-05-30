@@ -1,0 +1,186 @@
+/*        Chef        */
+.display-none {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}
+
+.chef-cooking {
+    position: absolute;
+    background-image: url(./assets/img/static/chef-cook.png);
+    background-size: cover;
+    bottom: 18px;
+    width: 35px;
+    height: 63px;
+    animation: moveChefCooking 0.5s steps(12) alternate infinite;
+}
+
+@keyframes moveChefCooking {
+    0% {
+        background-position-x: 0px;
+    }
+
+    100% {
+        background-position-x: -420px;
+    }
+
+}
+
+.chef-walk-with-burger {
+    position: absolute;
+    background-image: url(./assets/img/static/chef-burger.png);
+    background-size: cover;
+    bottom: -10px;
+    width: 55px;
+    height: 110px;
+    animation: moveChefWalkBurger 1s steps(16) alternate infinite;
+}
+
+@keyframes moveChefWalkBurger {
+    from {
+        background-position-x: 0px;
+    }
+
+    to {
+        background-position-x: -880px;
+    }
+}
+
+.chef-walk {
+    position: absolute;
+    background-image: url(./assets/img/static/chef-walk.png);
+    background-size: cover;
+    bottom: 0px;
+    width: 34px;
+    height: 102px;
+    animation: moveChefWalk 1s steps(16) alternate infinite;
+}
+
+@keyframes moveChefWalk {
+    from {
+        background-position-x: 0px;
+    }
+
+    to {
+        background-position-x: -544px;
+    }
+}
+
+.tables {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    right: 97px;
+    bottom: 13px;
+    z-index: 0;
+}
+
+.counter-table {
+    width: 50px;
+    height: 26px;
+    background: url(./assets/img/static/kitchen-table.png) no-repeat;
+    background-size: contain;
+}
+
+.delivery-man {
+    background-image: url(./assets/img/static/delivery-boy.png);
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    width: 75px;
+    height: 60px;
+    position: absolute;
+    bottom: -1px;
+    z-index: 0;
+    left: 100px;
+    animation: moveDeliveryBoy 10s linear infinite;
+}
+
+@keyframes moveDeliveryBoy {
+    from {
+        left: 100px;
+    }
+
+    to {
+        left: 1500px;
+    }
+}
+
+/* Extra small devices (phones, 800px and down) */
+@media only screen and (max-width: 800px) {
+    .chef-walk-with-burger {
+        bottom: -5px;
+        width: 30px;
+        height: 60px;
+    }
+
+    @keyframes moveChefWalkBurger {
+        from {
+            background-position-x: 0px;
+        }
+
+        to {
+            background-position-x: -480px;
+        }
+    }
+
+    .chef-walk {
+        bottom: -2px;
+        width: 21px;
+        height: 63px;
+    }
+
+    @keyframes moveChefWalk {
+        from {
+            background-position-x: 0px;
+        }
+
+        to {
+            background-position-x: -336px;
+        }
+    }
+
+    .chef-cooking {
+        bottom: 7px;
+        width: 25px;
+        height: 45px;
+    }
+
+    @keyframes moveChefCooking {
+        0% {
+            background-position-x: 0px;
+        }
+
+        100% {
+            background-position-x: -300px;
+        }
+
+    }
+
+    .tables {
+        right: 27px;
+        bottom: 10px;
+    }
+
+    .counter-table {
+        width: 28px;
+        height: 14px;
+    }
+
+    .delivery-man {
+        width: 40px;
+        height: 32px;
+        left: 27px;
+    }
+
+    @keyframes moveDeliveryBoy {
+        from {
+            left: 27px;
+        }
+
+        to {
+            left: 800px;
+        }
+    }
+}

@@ -23,6 +23,7 @@ export default function Example(props) {
               Array(5).fill(0).map((v, index) => {
                 return (
                   <a
+                    key={index}
                     href="#"
                     aria-current="page"
                     className="relative inline-flex items-center px-4 py-2 rounded-md text-sm font-semibold text-gray-300 focus:z-20 focus:outline-offset-0"
