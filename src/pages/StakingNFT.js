@@ -6,9 +6,9 @@ import '../css/animations.css';
 import '../css/second_section.css';
 import '../css/roadmap.css';
 import '../css/real_roadmap.css';
-import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { useState, useCallback, useEffect } from 'react';
+import Navbar from './../components/Navbar';
+import Footer from './../components/Footer';
 
 import web3ModalSetup from "./../helpers/web3ModalSetup";
 import Web3 from "web3";

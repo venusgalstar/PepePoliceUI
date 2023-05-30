@@ -7,8 +7,8 @@ import '../css/second_section.css';
 import '../css/roadmap.css';
 import '../css/real_roadmap.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from './../components/Navbar';
+import Footer from './../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
