@@ -24,6 +24,7 @@ function MintingNFT() {
     const [nftContract, setNftContract] = useState(null);
     const [gNftContract, setGNftContract] = useState(null);
     const [totalMintedCount, setTotalMintedCount] = useState(null);
+    const [pendingTx, setPendingTx] = useState(false);
 
     const logoutOfWeb3Modal = async () => {
         // alert("logoutOfWeb3Modal");
@@ -88,11 +89,21 @@ function MintingNFT() {
             return;
         }
         
-        var eth_value = 0.01 * nftCount;       
+        var eth_value = 0.01 * nftCount;     
 
-        console.log(nftContract);
+        try{
+            if( pendingTx ){
+                alert("Previous Transaction is going on!");
+                return;
+            }
 
-        await nftContract.methods.mint(curAcount, nftCount).send({from: curAcount, value: web3.utils.toWei(eth_value.toString(), 'ether')});
+            setPendingTx(true);
+            await nftContract.methods.mint(curAcount, nftCount).send({from: curAcount, value: web3.utils.toWei(eth_value.toString(), 'ether')});
+            getInfo();            
+        } catch(e){
+            alert("Error occured while Minting!");
+        }
+        setPendingTx(false);
     }
 
     async function getInfo(){        
@@ -127,7 +138,7 @@ function MintingNFT() {
                                 <div className='border border-gray-700 p-4 rounded-xl' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)" }}>
                                     <div className='flex flex-row justify-between'>
                                         <div className='text-gray-400 flex flex-row items-center text-2xl py-2'>
-                                            <p className='pr-1 text-orange-400 font-bold'>{totalMintedCount} / 10000</p>
+                                            <p className='pr-1 text-orange-400 font-bold'>Minted {totalMintedCount} / 10000</p>
                                         </div>
                                     </div>
 
@@ -160,8 +171,7 @@ function MintingNFT() {
                                             nftMint();
                                         }}
                                     >
-                                        {/* {isLoading ? "Minting..." : "Minting NFTs PPN"}*/}
-                                        Minting NFTs PPN
+                                        { pendingTx ? "Minting....": "Minting NFTs PPN"}
                                     </button>
                                 </div>
                             </div>
