@@ -23,8 +23,15 @@ function StakingNFT() {
     const [nftContract, setNftContract] = useState(null);
     const [stakeNftContract, setStakeNftContract] = useState(null);
     const [stakedNftList, setStakeNftList] = useState(null);
+    const [stakedNftCount, setStakeNftCount] = useState(null);
     const [unStakedNftList, setUnStakeNftList] = useState(null);
+    const [unStakeNftCount, setUnStakeNftCount] = useState(0);
     const [baseUri, setBaseUri] = useState("https://ipfs.io/ipfs/bafybeidngmtnoiluqfxodyykvs2inaoybktz3r4pt2onnufbqiubpnyv4i");
+    const [gNftContract, setGNftContract] = useState(null);
+    const [gNftStakeContract, setGNftStakeContract] = useState(null);
+    const [totalStakedCount, setTotalStakedCount] = useState(0);
+    const [totalRewardAmount, setTotalRewardAmount] = useState(0);
+    const [pendingTx, setPendingTx] = useState(false);
 
     const logoutOfWeb3Modal = async () => {
         // alert("logoutOfWeb3Modal");
@@ -83,6 +90,25 @@ function StakingNFT() {
         // eslint-disable-next-line
     }, [setInjectedProvider]);
 
+    async function getInfo() {
+        const staked_nft_balance = await gNftContract.methods.balanceOf(web3Config.nftStakeAddress).call();
+        setTotalStakedCount(staked_nft_balance);
+    }
+
+    useEffect(() => {
+        if (gNftContract != null && gNftStakeContract != null)
+            getInfo();
+    }, [gNftContract, gNftStakeContract]);
+
+    useEffect(() => {
+        const gNftContractV = new web3Object.web3NoAccount.eth.Contract(web3Config.nftAbi, web3Config.nftAddress);
+        setGNftContract(gNftContractV);
+
+        const gNftStakeContractV = new web3Object.web3NoAccount.eth.Contract(web3Config.nftStakeAbi, web3Config.nftStakeAddress);
+        setGNftStakeContract(gNftStakeContractV);
+    }, []);
+
+
     const fetchDataForUnstake = async () => {
 
         // var baseUri = await nftContract.methods.baseUri().call();
@@ -90,10 +116,15 @@ function StakingNFT() {
         setStakeNftList(null);
 
         const staked_nft_list = await stakeNftContract.methods.tokensOfOwner(curAcount).call();
-        console.log("staked_nft_list", staked_nft_list);
         setStakeNftList(staked_nft_list);
+        setStakeNftCount(staked_nft_list.length);
+
+        const total_reward_amount = await stakeNftContract.methods.earningInfo(curAcount, staked_nft_list).call();
+        const total_reward_amountv = parseFloat(web3Object.web3NoAccount.utils.fromWei(total_reward_amount.toString(), 'ether'));
+        console.log("total_reward_amountv", total_reward_amountv);
+        setTotalRewardAmount(total_reward_amountv.toFixed(4));
     };
-    
+
     const fetchDataForStake = async () => {
 
         // var baseUri = await nftContract.methods.baseUri().call();
@@ -110,9 +141,8 @@ function StakingNFT() {
             nft_list.push(nft_id);
         }
 
-        console.log("nft_list", nft_list);
-
         setUnStakeNftList(nft_list);
+        setUnStakeNftCount(nft_balance);
     };
 
     useEffect(() => {
@@ -134,12 +164,10 @@ function StakingNFT() {
             return;
         }
 
-        console.log("getting for unstake!");
-
         fetchDataForUnstake();
     }, [stakeNftContract]);
 
-    async function stakeNft() {
+    async function stakeNft(nft_id) {
 
         if (!isConnected) {
             alert("Please Connect Your Wallet!");
@@ -151,21 +179,33 @@ function StakingNFT() {
             return;
         }
 
-        var index;
-
-        console.log(unStakedNftList.length);
-
-        for (index = 0; index < unStakedNftList.length; index++) {
-            await nftContract.methods.approve(web3Config.nftStakeAddress, unStakedNftList[index]).send({ from: curAcount });
+        if( pendingTx ){
+            alert("Previous transaction hasn't been finished!");
+            return;
         }
 
-        await stakeNftContract.methods.stake(unStakedNftList).send({ from: curAcount });
+        setPendingTx(true);
+
+        try{
+            if( nft_id == -1)
+            {
+                await stakeNftContract.methods.stake(unStakedNftList).send({ from: curAcount });
+            }   
+            else{
+                var id_array=[];
+                id_array.push(nft_id);
+                await stakeNftContract.methods.stake(id_array).send({ from: curAcount });
+            }
+        } catch(e){
+            alert("Error on staking nft!");
+        }
+        setPendingTx(false);
 
         fetchDataForStake();
         fetchDataForUnstake();
     }
 
-    async function unStakeNft() {
+    async function unStakeNft(nft_id) {
 
         if (!isConnected) {
             alert("Please Connect Your Wallet!");
@@ -177,7 +217,65 @@ function StakingNFT() {
             return;
         }
 
-        await stakeNftContract.methods.unstake(stakedNftList).send({ from: curAcount });
+        if( pendingTx ){
+            alert("Previous transaction hasn't been finished!");
+            return;
+        }
+
+        setPendingTx(true);
+
+        try{
+
+            if( nft_id == -1 ){
+                await stakeNftContract.methods.unstake(stakedNftList).send({ from: curAcount });
+            } else{
+                var nft_list = [];
+                nft_list.push(nft_id);
+                await stakeNftContract.methods.unstake(nft_list).send({ from: curAcount });
+            }
+            
+        } catch(e){
+            alert("Error on unstake!");
+        }
+        setPendingTx(false);
+
+        fetchDataForStake();
+        fetchDataForUnstake();
+    }
+
+    async function claimReward(nft_id){
+
+        if (!isConnected) {
+            alert("Please Connect Your Wallet!");
+            return;
+        }
+
+        if (stakedNftList == null || stakedNftList.length == 0) {
+            alert("No nft in your wallet!");
+            return;
+        }
+
+        if( pendingTx ){
+            alert("Previous transaction hasn't been finished!");
+            return;
+        }
+
+        setPendingTx(true);
+
+        try{
+
+            if( nft_id == -1 ){
+                await stakeNftContract.methods.claim(stakedNftList).send({ from: curAcount });
+            } else{
+                var nft_list = [];
+                nft_list.push(nft_id);
+                await stakeNftContract.methods.claim(nft_list).send({ from: curAcount });
+            }
+            
+        } catch(e){
+            alert("Error on unstake!");
+        }
+        setPendingTx(false);
 
         fetchDataForStake();
         fetchDataForUnstake();
@@ -189,74 +287,106 @@ function StakingNFT() {
 
             <div className='relative h-full pt-6' style={{ backgroundColor: "#1F2633" }}>
                 <div className='mt-6 flex h-full flex-col items-center relative'>
-                    <div className='mt-10 relative px-4 sm:px-6 flex justify-center items-center w-full' style={{ height: "550px" }}>
+                    <div className='mt-10 relative px-4 sm:px-6 flex justify-center items-center w-full' style={{ height: "650px" }}>
+                        <div className='flex flex-col'>
+                            <div className='text-orange-400 text-2xl font-bold'>Total Staked Count: {totalStakedCount}</div>
+                            <div className='flex'>
+                                {/* Staking */}
+                                <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "520px", backgroundColor: "rgba(0,0,0,0.9)" }}>
+                                    {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
+                                    <div className='text-orange-400 text-2xl font-bold'>Stakable NFT :{ unStakeNftCount }</div>
 
-                        {/* Staking */}
-                        <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "520px", backgroundColor: "rgba(0,0,0,0.9)" }}>
-                            {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
-                            <div className='text-orange-400 text-2xl font-bold'>Stake NFT</div>
+                                    <div className='my-5 tabcontent ' style={{ height: "450px" }}>
+                                        <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
+                                            {
 
-                            <div className='my-5 tabcontent ' style={{ height: "450px" }}>
-                                <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
-                                    {
+                                                unStakedNftList != null ? unStakedNftList.map((v, index) => {
+                                                    return (
+                                                        <div key={index} className='grid grid-cols-3 pb-5'>
+                                                            <div className='text-gray-400 flex flex-row items-center text-sm'>
+                                                                <p style={{ fontSize: "25px" }} className='pr-1 text-orange-400 font-bold'>{v}</p>
+                                                            </div>
+                                                            <div className='flex items-center'>
+                                                                <img className='rounded-xl' style={{ width: "100px" }} src={baseUri + "/" + v + ".png"}></img>
+                                                            </div>
+                                                            <div className='flex items-center'>
+                                                                <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
+                                                                    onClick={() => {
+                                                                        stakeNft(v);
+                                                                    }}
+                                                                > Stake </button>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }) : "Stakable NFT Lists"
+                                            }
+                                        </div>
 
-                                        unStakedNftList != null ? unStakedNftList.map((v, index) => {
-                                            return (
-                                                <div key={index} className='grid grid-cols-3 pb-5'>
-                                                    <div className='text-gray-400 flex flex-row items-center text-sm'>
-                                                        <p style={{ fontSize: "25px" }} className='pr-1 text-orange-400 font-bold'>{v}</p>
-                                                    </div>
-                                                    <div className='py- col-span-2'>
-                                                        <img className='rounded-xl' src={baseUri + "/" + v + ".png"}></img>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }) : "NFT Lists"
-                                    }
+                                        <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
+                                            onClick={() => {
+                                                stakeNft(-1);
+                                            }}
+                                        >
+                                            Stake All
+                                        </button>
+                                    </div>
                                 </div>
+                                {/* {Unstaking} */}
+                                <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "520px", backgroundColor: "rgba(0,0,0,0.9)" }}>
+                                    {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
+                                    <div className='text-orange-400 text-2xl font-bold'>TotalReward : {totalRewardAmount}</div>{/*Staked NFT : {stakedNftCount} */}
 
-                                <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
-                                    onClick={() => {
-                                        stakeNft();
-                                    }}
-                                >
-                                    Stake
-                                </button>
-                            </div>
-                        </div>
-                        {/* {Unstaking} */}
-                        <div className="roadmap_card rgb pt-8 px-4 flex flex-col" style={{ width: "400px", height: "520px", backgroundColor: "rgba(0,0,0,0.9)" }}>
-                            {/* <div className='text-white text-xl font-bold my-5' style={{height: "30px"}}>Pepe Police</div> */}
-                            <div className='text-orange-400 text-2xl font-bold'>UnStake NFT</div>
+                                    <div className='my-5 tabcontent ' style={{ height: "450px" }}>
+                                        <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
+                                            {
 
-                            <div className='my-5 tabcontent ' style={{ height: "450px" }}>
-                                <div className='border border-gray-700 p-4 rounded-xl ' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)", height: "350px", overflowY: "auto" }}>
-                                    {
+                                                stakedNftList != null ? stakedNftList.map((v, index) => {
+                                                    return (
+                                                        <div key={index} className='grid grid-cols-3 pb-5'>
+                                                            <div className='text-gray-400 flex flex-row items-center text-sm'>
+                                                                <p style={{ fontSize: "25px" }} className='pr-1 text-orange-400 font-bold'>{v}</p>
+                                                            </div>
+                                                            <div className='flex items-center'>
+                                                                <img className='rounded-xl' style={{width:"100px"}} src={baseUri + "/" + v + ".png"}></img>
+                                                            </div>
+                                                            <div className='flex flex-col items-center'>
+                                                                <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
+                                                                    onClick={() => {
+                                                                        unStakeNft(v);
+                                                                    }}
+                                                                > Unstake </button>
+                                                                <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
+                                                                    onClick={() => {
+                                                                        claimReward(v);
+                                                                    }}
+                                                                > Claim </button>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }) : "Staked NFT Lists"
+                                            }
+                                        </div>
 
-                                        stakedNftList != null ? stakedNftList.map((v, index) => {
-                                            return (
-                                                <div key={index} className='grid grid-cols-3 pb-5'>
-                                                    <div className='text-gray-400 flex flex-row items-center text-sm'>
-                                                        <p style={{ fontSize: "25px" }} className='pr-1 text-orange-400 font-bold'>{v}</p>
-                                                    </div>
-                                                    <div className='py- col-span-2'>
-                                                        <img className='rounded-xl' src={baseUri + "/" + v + ".png"}></img>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }) : "NFT Lists"
-                                    }
+                                        <button className='nft_button w-1/2 my-2 py-3 rounded-md text-white text-center font-bold'
+                                            onClick={() => {
+                                                unStakeNft(-1);
+                                            }}
+                                        >
+                                            Unstake All
+                                        </button>
+                                        <button className='nft_button w-1/2 my-2 py-3 rounded-md text-white text-center font-bold'
+                                            onClick={() => {
+                                                claimReward(-1);
+                                            }}
+                                        >
+                                            Claim All
+                                        </button>
+                                    </div>
                                 </div>
-
-                                <button className='nft_button w-full my-2 py-3 rounded-md text-white lorswap_vote text-center font-bold'
-                                    onClick={() => {
-                                        unStakeNft();
-                                    }}
-                                >
-                                    UnStake
-                                </button>
                             </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
