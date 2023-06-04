@@ -24,10 +24,15 @@ function Staking() {
     const [tokenContract, setTokenContract] = useState(null);
 
     const [totalStakedAmount, setTotalStakedAmount] = useState(0);
+    const [balanceAmount, setBalanceAmount] = useState(0);
     const [totalRewardAmount, setTotalRewardAmount] = useState(0);
     const [stakedAmount, setStakedAmount] = useState(0);
     const [rewardAmount, setRewardAmount] = useState(0);
     const [stakingAmount, setStakingAmount] = useState(0);
+
+    const [gTokenContract, setGTokenContract] = useState(null);
+    const [gTokenStakeContract, setGTokenStakeContract] = useState(null);
+    const [pendingTx, setPendingTx] = useState(false);
 
     const logoutOfWeb3Modal = async () => {
         // alert("logoutOfWeb3Modal");
@@ -88,14 +93,6 @@ function Staking() {
 
     const fetchDataForStake = async () => {
 
-        const totalStakedAmount = await tokenStakeContract.methods.totalSupply().call();
-        console.log("totalStakedAmount", totalStakedAmount);
-        setTotalStakedAmount(web3.utils.fromWei(totalStakedAmount, 'ether'));
-
-        const rewardPerToken = await tokenStakeContract.methods.rewardPerToken().call();
-        console.log("rewardPerToken", rewardPerToken);
-        setTotalRewardAmount(web3.utils.fromWei(rewardPerToken, 'ether'));
-
         if (curAcount != null) {
             const stakedAmount = await tokenStakeContract.methods.balanceOf(curAcount).call();
             console.log("stakedAmount", stakedAmount);
@@ -104,12 +101,100 @@ function Staking() {
             const rewardAmount = await tokenStakeContract.methods.earned(curAcount).call();
             console.log("rewardAmount", rewardAmount);
             setRewardAmount(web3.utils.fromWei(rewardAmount, 'ether'));
-        }
 
+            const balanceAmount = await tokenContract.methods.balanceOf(curAcount).call();
+            console.log("balanceAmount", balanceAmount);
+            setBalanceAmount(web3.utils.fromWei(balanceAmount, 'ether'));
+        }
     };
 
     function handleChange(event) {
         setStakingAmount(event.target.value);
+    }
+
+    async function getInfo() {
+        const totalStakedAmount = await gTokenStakeContract.methods.totalSupply().call();
+        setTotalStakedAmount(web3Object.web3NoAccount.utils.fromWei(totalStakedAmount, 'ether'));
+
+        const rewardPerToken = await gTokenStakeContract.methods.rewardPerToken().call();
+        setTotalRewardAmount(web3Object.web3NoAccount.utils.fromWei(rewardPerToken, 'ether'));
+    }
+
+    async function unStakeToken() {
+        if (!isConnected) {
+            alert("Please Connect Your Wallets!");
+            return;
+        }
+
+        if (pendingTx) {
+            alert("Previous transaction hasn't been finished!");
+            return;
+        }
+
+        setPendingTx(true);
+
+        try {
+            const stakedAmountBalance = web3.utils.toWei(stakedAmount, 'ether');
+            await tokenStakeContract.methods.withdraw(stakedAmountBalance).send({ from: curAcount });
+            await tokenStakeContract.methods.getReward().send({ from: curAcount });
+        } catch (e) {
+            alert("Error on unstaking!");
+        }
+        setPendingTx(false);
+
+        getInfo();
+        fetchDataForStake();
+    }
+
+    async function claimToken() {
+        if (!isConnected) {
+            alert("Please Connect Your Wallets!");
+            return;
+        }
+
+        if (pendingTx) {
+            alert("Previous transaction hasn't been finished!");
+            return;
+        }
+
+        setPendingTx(true);
+
+        try {
+            await tokenStakeContract.methods.getReward().send({ from: curAcount });
+        } catch (e) {
+            alert("Error on claim!");
+        }
+        setPendingTx(false);
+
+        getInfo();
+        fetchDataForStake();
+    }
+
+    async function stakeToken() {
+        if (!isConnected) {
+            alert("Please Connect Your Wallets!");
+            return;
+        }
+
+        if (pendingTx) {
+            alert("Previous transaction hasn't been finished!");
+            return;
+        }
+
+        setPendingTx(true);
+
+        try {
+            const stakingAmountBalance = web3.utils.toWei(stakingAmount, 'ether');
+            await tokenContract.methods.approve(web3Config.tokenStakeAddress, stakingAmountBalance).send({ from: curAcount });
+            await tokenStakeContract.methods.stake(stakingAmountBalance).send({ from: curAcount });
+        } catch (e) {
+            alert("Error on staking!");
+        }
+
+        setPendingTx(false);
+
+        getInfo();
+        fetchDataForStake();
     }
 
     useEffect(() => {
@@ -119,41 +204,19 @@ function Staking() {
             return;
         }
 
-        console.log("getting for stake!");
+        if (tokenContract != null && tokenStakeContract != null)
+            fetchDataForStake();
+    }, [tokenContract, tokenStakeContract]);
 
-        fetchDataForStake();
-    }, [tokenStakeContract]);
+    useEffect(() => {
+        if (gTokenContract != null && gTokenStakeContract != null)
+            getInfo();
+    }, [gTokenContract, gTokenStakeContract]);
 
-    async function unStakeToken() {
-        if (!isConnected) {
-            alert("Please Connect Your Wallets!");
-            return;
-        }
-        const stakedAmountBalance = web3.utils.toWei(stakedAmount, 'ether');
-        await tokenStakeContract.methods.withdraw(stakedAmountBalance).send({ from: curAcount });
-        await tokenStakeContract.methods.getReward().send({ from: curAcount });
-    }
-
-
-    async function claimToken() {
-        if (!isConnected) {
-            alert("Please Connect Your Wallets!");
-            return;
-        }
-        // const stakedAmountBalance = web3.utils.toWei(stakedAmount, 'ether');
-        // await tokenStakeContract.methods.withdraw(stakedAmountBalance).send({ from: curAcount });
-        await tokenStakeContract.methods.getReward().send({ from: curAcount });
-    }
-
-    async function stakeToken() {
-        if (!isConnected) {
-            alert("Please Connect Your Wallets!");
-            return;
-        }
-        const stakingAmountBalance = web3.utils.toWei(stakingAmount, 'ether');
-        await tokenContract.methods.approve(web3Config.tokenStakeAddress, stakingAmountBalance).send({ from: curAcount });
-        await tokenStakeContract.methods.stake(stakingAmountBalance).send({ from: curAcount });
-    }
+    useEffect(() => {
+        setGTokenStakeContract(new web3Object.web3NoAccount.eth.Contract(web3Config.tokenStakeAbi, web3Config.tokenStakeAddress));
+        setGTokenContract(new web3Object.web3NoAccount.eth.Contract(web3Config.tokenAbi, web3Config.tokenAddress));
+    }, []);
 
     return (
         <div className="App">
@@ -169,7 +232,7 @@ function Staking() {
                             {/* <div><img src="img/pepe_text.png" style={{width: "150px", height:"50px"}}></img></div> */}
 
                             <div id='devote' className='my-5 flex justify-center tabcontent' style={{ height: "480px" }}>
-                                <div className='border border-gray-700 p-4 rounded-xl' style={{ backgroundColor: "#1A1530" }}>
+                                <div className='border border-gray-700 p-4 rounded-xl w-full' style={{ backgroundColor: "#1A1530" }}>
                                     <div className='flex flex-row justify-between'>
                                         <div className='text-gray-400 flex flex-row items-center text-sm'>
                                             <p className='pr-1'>Staked Amount</p>
@@ -219,6 +282,9 @@ function Staking() {
                                     <div className='flex flex-row justify-between'>
                                         <div className='text-gray-400 flex flex-row items-center text-sm'>
                                             <p className='pr-1'>Staking Amount</p>
+                                        </div>
+                                        <div className='text-gray-400 flex flex-row items-center text-sm'>
+                                            <p className='pr-1'>Balance {balanceAmount}</p>
                                         </div>
                                     </div>
                                     <div className='py-2'>
