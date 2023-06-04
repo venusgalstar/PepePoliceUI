@@ -11,13 +11,9 @@ import Navbar from './../components/Navbar';
 import Footer from './../components/Footer';
 import Pagination from './../components/Pagination';
 
-import web3ModalSetup from "./../helpers/web3ModalSetup";
+import web3Object from "./index";
 import Web3 from "web3";
 import web3Config from "../constant/config";
-
-const web3Modal = web3ModalSetup();
-const httpProvider = new Web3.providers.HttpProvider(web3Config.RPC_URL);
-const web3NoAccount = new Web3(httpProvider);
 
 function MintingNFT() {
     const [nftCount, setNftCount] = useState(1);
@@ -26,10 +22,12 @@ function MintingNFT() {
     const [isConnected, setIsConnected] = useState(false);
     const [curAcount, setCurAcount] = useState(null);
     const [nftContract, setNftContract] = useState(null);
+    const [gNftContract, setGNftContract] = useState(null);
+    const [totalMintedCount, setTotalMintedCount] = useState(null);
 
     const logoutOfWeb3Modal = async () => {
         // alert("logoutOfWeb3Modal");
-        web3Modal.clearCachedProvider();
+        web3Object.web3Modal.clearCachedProvider();
         if (
             injectedProvider &&
             injectedProvider.provider &&
@@ -43,7 +41,7 @@ function MintingNFT() {
     };
 
     const loadWeb3Modal = useCallback(async () => {
-        const provider = await web3Modal.connect();
+        const provider = await web3Object.web3Modal.connect();
         // alert("loadWeb3Modal1");
         const web3Provider = new Web3(provider);
         // alert("loadWeb3Modal2");
@@ -97,6 +95,21 @@ function MintingNFT() {
         await nftContract.methods.mint(curAcount, nftCount).send({from: curAcount, value: web3.utils.toWei(eth_value.toString(), 'ether')});
     }
 
+    async function getInfo(){        
+        const totalMintedCountV = await gNftContract.methods.totalSupply().call();
+        setTotalMintedCount(totalMintedCountV);
+    }
+
+    useEffect(() => {
+        if( gNftContract != null)
+            getInfo();
+    },[gNftContract]);
+
+    useEffect(() => {
+        const gNftContractV = new web3Object.web3NoAccount.eth.Contract(web3Config.nftAbi, web3Config.nftAddress);
+        setGNftContract(gNftContractV);
+    },[]);
+
     return (
         <div className="App">
             <Navbar name="NFTmint" loadWeb3Modal={loadWeb3Modal} isConnected={isConnected} curAcount={curAcount} logoutOfWeb3Modal={logoutOfWeb3Modal} />
@@ -114,7 +127,7 @@ function MintingNFT() {
                                 <div className='border border-gray-700 p-4 rounded-xl' style={{ backgroundColor: "rgba(133, 100, 28, 0.3)" }}>
                                     <div className='flex flex-row justify-between'>
                                         <div className='text-gray-400 flex flex-row items-center text-2xl py-2'>
-                                            <p className='pr-1 text-orange-400 font-bold'>0 / 10000</p>
+                                            <p className='pr-1 text-orange-400 font-bold'>{totalMintedCount} / 10000</p>
                                         </div>
                                     </div>
 
@@ -126,7 +139,12 @@ function MintingNFT() {
 
                                     <div className='flex flex-row justify-between'>
                                         <div className='text-gray-400 flex flex-row items-center text-sm'>
-                                            <p className='pr-1 text-green-600 font-bold'>Please Connect Wallet</p>
+                                            <p className='pr-1 text-green-600 font-bold'>
+                                            {
+                                                !isConnected ? "Please Connect Wallet"
+                                                :curAcount
+                                            }    
+                                            </p>
                                         </div>
                                     </div>
 

@@ -12,14 +12,10 @@ import Footer from './../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
+import web3Object from "./index";
 import web3Config from '../constant/config';
-import web3ModalSetup from "../helpers/web3ModalSetup";
 import Web3 from "web3";
 
-const web3Modal = web3ModalSetup();
-
-const httpProvider = new Web3.providers.HttpProvider(web3Config.RPC_URL);
-const web3NoAccount = new Web3(httpProvider);
 
 function Landing () {
     // const [web3, setWeb3] = useState();

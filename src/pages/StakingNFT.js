@@ -10,13 +10,9 @@ import { useState, useCallback, useEffect } from 'react';
 import Navbar from './../components/Navbar';
 import Footer from './../components/Footer';
 
-import web3ModalSetup from "./../helpers/web3ModalSetup";
+import web3Object from "./index";
 import Web3 from "web3";
 import web3Config from "../constant/config";
-
-const web3Modal = web3ModalSetup();
-const httpProvider = new Web3.providers.HttpProvider(web3Config.RPC_URL);
-const web3NoAccount = new Web3(httpProvider);
 
 function StakingNFT() {
 
@@ -32,7 +28,7 @@ function StakingNFT() {
 
     const logoutOfWeb3Modal = async () => {
         // alert("logoutOfWeb3Modal");
-        web3Modal.clearCachedProvider();
+        web3Object.web3Modal.clearCachedProvider();
         if (
             injectedProvider &&
             injectedProvider.provider &&
@@ -46,7 +42,7 @@ function StakingNFT() {
     };
 
     const loadWeb3Modal = useCallback(async () => {
-        const provider = await web3Modal.connect();
+        const provider = await web3Object.web3Modal.connect();
         // alert("loadWeb3Modal1");
         const web3Provider = new Web3(provider);
         // alert("loadWeb3Modal2");
