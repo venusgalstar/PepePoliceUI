@@ -6,7 +6,7 @@ import tokenStakeAbi from './tokenStake.json';
 var config = {
     nftAddress: "0xAEAed6335EDaBbAa074f6C82910c36Bf7FdA9109",
     nftAbi: nftAbi,
-    tokenAddress: "0xBD85c3F31bc20aE79eCc710fF9CbC03bCB1CFA8C",
+    tokenAddress: "0xFD2a3ceffE78Af023472012cCbc7282FF7B45f6F",
     tokenAbi: tokenAbi,
     nftStakeAddress: "0xeD698F7a543172a18655fF9998587e98dA417A7F",
     nftStakeAbi: nftStakeAbi,
